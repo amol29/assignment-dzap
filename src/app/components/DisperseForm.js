@@ -9,21 +9,29 @@ export default function DisperseForm(){
   const [errors, setErrors] = useState([])
   const [duplicates, setDuplicates] = useState({}) // We can also use ref here as we do not need this value for rendering
 
-  const getAmount = (address) => {
-    let amount;
+  const splitAddress = (address, delimiter) => {
+    const addressArray = address.split(delimiter)
+    return {
+      address: addressArray[0],
+      amount: addressArray[1],
+      delimiter
+    }
+  }
+
+  const getAmountAndAddress = (address) => {
     if(address.includes('=')) {
-      amount = address.split('=')[1]
+      return splitAddress(address, "=")
     }
 
     if (address.includes(',')){
-      amount = address.split(',')[1]
+      return splitAddress(address, ",")
     }
 
     if (address.includes(' ')){
-      amount = address.split(' ')[1]
+      return splitAddress(address, " ")
     }
 
-    return amount
+    return {}
   }
 
   const onSubmit = () => {
@@ -38,13 +46,13 @@ export default function DisperseForm(){
 
       if(!Boolean(refinedAddress)) return refinedAddress;
 
-      const amount = getAmount(refinedAddress);
+      const {amount, address: addressWithoutAmount} = getAmountAndAddress(refinedAddress);
 
-      if(refinedAddress.length < 10 && refinedAddress.length > 42) {
-        errors.push(`Incorrect length on line number ${lineNumber}`)
+      if(addressWithoutAmount.length !== 42) {
+        errors.push(`Incorrect address length on line number ${lineNumber}`)
       }
 
-      if(!refinedAddress.startsWith('0x')){
+      if(!addressWithoutAmount.startsWith('0x')){
         errors.push(`Incorrect address on line number ${lineNumber} missing 0x`)
       }
 
@@ -83,8 +91,28 @@ export default function DisperseForm(){
     editorRef.current.setValue(finalAddresses.join('\n'));
   }
 
+  const mergeBalances = (amount, count) => {
+    let newAmount = parseInt(amount, 10)
+    for (let i=1; i < count; i++) {
+      newAmount += parseInt(amount, 10)
+    }
+    return newAmount;
+  }
+
   const combineBalance = () => {
-    alert("Need clarity in requirement/ logic, than adding the value should be small task")
+    const finalAddresses = Object.keys(duplicates).map((key, index)=> {
+      if(duplicates[key].length > 1) {
+        const {amount, address, delimiter} = getAmountAndAddress(key);
+        console.log(amount)
+        const newAmount = mergeBalances(amount, duplicates[key].length)
+        return `${address}${delimiter}${newAmount}`;
+      }
+      return key
+    })
+
+    setDuplicates({})
+    setErrors([])
+    editorRef.current.setValue(finalAddresses.join('\n'));
   }
 
   const hashDuplicates = Object.values(duplicates).find((item)=> item.length > 1)
