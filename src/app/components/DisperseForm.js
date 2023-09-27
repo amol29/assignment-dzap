@@ -97,7 +97,7 @@ export default function DisperseForm(){
       </div>
       <LineTextEditor ref={editorRef} buttonRef={buttonRef}/>
       <div className="flex flex-row justify-between my-2">
-        <h3 className="text-white text-xs">Seperated By '=' or ',' or ' '</h3>
+        <h3 className="text-white text-xs">Seperated By &apos;=&apos; or &apos;,&apos; or &apos; &apos; </h3>
         <span className="text-slate-500 text-sm">Show Example</span>
       </div>
       {hashDuplicates && <div className="flex flex-row justify-between my-2">
