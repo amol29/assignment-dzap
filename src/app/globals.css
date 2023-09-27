@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer components {
+  .btn-primary {
+    @apply py-2 px-4 text-white font-semibold rounded-lg shadow-md h-14 bg-gradient-to-r from-fuchsia-500 to-violet-500 disabled:from-black disabled:from-black hover:from-fuchsia-500 hover:to-violet-600 focus:from-fuchsia-500 focus:to-violet-600 focus:outline-none focus:ring-2 focus:ring-opacity-75;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -24,4 +31,48 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+.parent-container {
+  background-color: #282a3a;
+  border-radius: 8px;
+}
+
+.editor {
+  display: inline-flex;
+  gap: 10px;
+  font-family: Consolas, "Courier New", Courier, monospace;
+  line-height: 21px;
+  background-color: #333333;
+  border-radius: 4px;
+  padding: 20px 10px;
+  width: 100%;
+}
+
+textarea {
+  line-height: 21px;
+  overflow-y: hidden;
+  padding: 0 5px;
+  border: 0;
+  background: #333333;
+  color: #fff;
+  min-width: 100%;
+  outline: none;
+  resize: none;
+  font-family: Consolas, "Courier New", Courier, monospace;
+  border-left: 1px solid white;
+}
+.numbers {
+  width: 20px;
+  text-align: right;
+}
+
+.numbers span {
+  counter-increment: linenumber;
+}
+
+.numbers span::before {
+  content: counter(linenumber);
+  display: block;
+  color: white;
 }
